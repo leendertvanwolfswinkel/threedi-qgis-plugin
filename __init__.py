@@ -23,7 +23,7 @@
 """
 import sys
 import os
-from utils.user_messages import pop_up_info, log
+from threedi_tools.utils.user_messages import pop_up_info, log
 
 msg = ''
 try:
@@ -82,5 +82,8 @@ def classFactory(iface):  # pylint: disable=invalid-name
     :param iface: QgsInterface. A QGIS interface instance.
     """
 
-    from .threedi_tools import ThreeDiTools
+    # initialize Qt resources from file resources.py
+    import resources  # NoQa
+
+    from threedi_tools.threedi_tools import ThreeDiTools
     return ThreeDiTools(iface)

@@ -30,7 +30,7 @@ from qgis.core import QgsMapLayerRegistry
 
 
 # Initialize Qt resources from file resources.py
-import resources  # NoQa
+# import resources  # NoQa
 
 # Import the code of the tools
 from threedi_result_selection import ThreeDiResultSelection

@@ -1,12 +1,12 @@
 import os
 import unittest
 
-from ..datasource.spatialite import (
+from threedi_tools.datasource.spatialite import (
     TdiSpatialite,
     get_datasource_variable,
     get_variables,
     )
-from ..datasource.netcdf import NetcdfDataSource
+from threedi_tools.datasource.netcdf import NetcdfDataSource
 
 spatialite_datasource_path = os.path.join(
     os.path.dirname(os.path.realpath(__file__)),
