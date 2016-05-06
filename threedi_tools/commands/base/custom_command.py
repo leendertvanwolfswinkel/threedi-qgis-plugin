@@ -3,7 +3,7 @@ import os
 
 from qgis.core import QgsVectorLayer, QgsMapLayerRegistry, QgsVectorJoinInfo
 
-from ThreeDiToolbox.utils.user_messages import pop_up_info
+from threedi_tools.utils.user_messages import pop_up_info
 
 
 def join_stats(filepath, layer, view_layer_field, csv_field='id'):

@@ -5,11 +5,11 @@ import csv
 import inspect
 import os
 
-from ThreeDiToolbox.stats.ncstats import NcStats
-from ThreeDiToolbox.utils.user_messages import (
+from threedi_tools.stats.ncstats import NcStats
+from threedi_tools.utils.user_messages import (
     pop_up_info, log, pop_up_question)
-from ThreeDiToolbox.views.tool_dialog import ToolDialogWidget
-from ThreeDiToolbox.commands.base.custom_command import (
+from threedi_tools.views.tool_dialog import ToolDialogWidget
+from threedi_tools.commands.base.custom_command import (
     CustomCommandBase, join_stats)
 
 

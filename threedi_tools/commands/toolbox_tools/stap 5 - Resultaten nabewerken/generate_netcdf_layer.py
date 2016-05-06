@@ -2,10 +2,10 @@
 """
 from qgis.core import QgsMapLayerRegistry
 
-from ThreeDiToolbox.utils.user_messages import pop_up_info
-from ThreeDiToolbox.views.tool_dialog import ToolDialogWidget
-from ThreeDiToolbox.commands.base.custom_command import CustomCommandBase
-from ThreeDiToolbox.utils.layer_from_netCDF import (
+from threedi_tools.utils.user_messages import pop_up_info
+from threedi_tools.views.tool_dialog import ToolDialogWidget
+from threedi_tools.commands.base.custom_command import CustomCommandBase
+from threedi_tools.utils.layer_from_netCDF import (
     make_flowline_layer, make_node_layer, make_pumpline_layer)
 
 
