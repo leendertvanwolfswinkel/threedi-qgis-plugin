@@ -2,7 +2,7 @@ import os.path
 
 from qgis.core import (
     QgsMapLayerRegistry, QgsProject, QgsDataSourceURI, QgsVectorLayer,
-    QgsRectangle, QgsLayerTreeNode, QgsCoordinateTransform)
+    QgsRectangle, QgsLayerTreeNode, QgsCoordinateTransform, QgsVectorJoinInfo)
 
 
 class LayerTreeManager(object):
@@ -292,42 +292,96 @@ class LayerTreeManager(object):
                     tree_layer3 = group.insertLayer(2, node)
                     self._mark(tree_layer3, 'nodes')
 
+
     def add_statistic_layers(self, result_row_nr, start_row, stop_row):
+        pass
         for row_nr in range(start_row, stop_row + 1):
             result = self.model.rows[row_nr]
             name = "%s%s" % (self.statistic_layergroup_basename,
                              result.name.value)
             marker = 'statistic_%s' % result.file_path.value
 
-            if self.model_layergroup is not None:
-                group = self._find_marked_child(self.model_layergroup, marker)
+            self.calc_all_stats(result)
 
-                if group is None:
-                    group = self.model_layergroup.insertGroup(3, name)
-                    self._mark(group, marker)
 
-                if self._find_marked_child(group, 'v2_manhole') is None:
-                    new_layer = self.create_layer(
-                        self.model.model_spatialite_filepath, 'v2_manhole')
-
-                    # from ..qdebug import pyqt_set_trace; pyqt_set_trace()
-                    if new_layer.isValid():
-                        QgsMapLayerRegistry.instance().addMapLayer(
-                            new_layer, False)
-                        tree_layer = group.insertLayer(100, new_layer)
-                        self._mark(tree_layer, 'v2_manhole')
-                        # from ..qdebug import pyqt_set_trace; pyqt_set_trace()
-
-                        cmd_path = ['stap 5 - Resultaten nabewerken',
-                                    'calc_manhole_statistics.py']
-                        mod = self.load_command_module(cmd_path)
-
-                        self.command = mod.CustomCommand()
-                        self.command.run_it(
-                            layer=new_layer,
-                            datasource=self.model.rows[row_nr],
-                            interactive=False)
-                        #from ..qdebug import pyqt_set_trace; pyqt_set_trace()
+        #
+        #     if self.model_layergroup is not None:
+        #         group = self._find_marked_child(self.model_layergroup, marker)
+        #
+        #         if group is None:
+        #             group = self.model_layergroup.insertGroup(3, name)
+        #             self._mark(group, marker)
+        #
+        #         if self._find_marked_child(group, 'v2_manhole') is None:
+        #             new_layer = self.create_layer(
+        #                 self.model.model_spatialite_filepath, 'v2_manhole')
+        #
+        #             # from ..qdebug import pyqt_set_trace; pyqt_set_trace()
+        #             if new_layer.isValid():
+        #                 QgsMapLayerRegistry.instance().addMapLayer(
+        #                     new_layer, False)
+        #                 tree_layer = group.insertLayer(100, new_layer)
+        #                 self._mark(tree_layer, 'v2_manhole')
+        #                 # from ..qdebug import pyqt_set_trace; pyqt_set_trace()
+        #
+        #                 cmd_path = ['stap 5 - Resultaten nabewerken',
+        #                             'calc_manhole_statistics.py']
+        #                 mod = self.load_command_module(cmd_path)
+        #
+        #                 self.command = mod.CustomCommand()
+        #                 self.command.run_it(
+        #                     layer=new_layer,
+        #                     datasource=self.model.rows[row_nr],
+        #                     interactive=False)
+        #                 #from ..qdebug import pyqt_set_trace; pyqt_set_trace()
+        #
+        #             line, node, pumpline = result.get_memory_layers()
+        #
+        #             if self._find_marked_child(group, 'flowlines') is None:
+        #                 # apply default styling on memory layers
+        #                 line.loadNamedStyle(os.path.join(
+        #                     os.path.dirname(os.path.realpath(__file__)),
+        #                     os.path.pardir, 'layer_styles', 'tools',
+        #                     'flowlines.qml'))
+        #
+        #                 QgsMapLayerRegistry.instance().addMapLayers(
+        #                     [line], False)
+        #
+        #                 tree_layer = group.insertLayer(0, line)
+        #                 self._mark(tree_layer, 'flowline_stats')
+        #
+        #                 cmd_path = ['stap 5 - Resultaten nabewerken',
+        #                             'calc_structure_statistics.py']
+        #                 mod = self.load_command_module(cmd_path)
+        #
+        #                 self.command = mod.CustomCommand()
+        #                 self.command.run_it(
+        #                     layer=line,
+        #                     datasource=self.model.rows[row_nr],
+        #                     interactive=False)
+        #
+        #         if self._find_marked_child(group, 'flow_lines') is None:
+        #             new_layer = self.create_layer(
+        #                 self.model.model_spatialite_filepath, 'v2_manhole')
+        #
+        #             # from ..qdebug import pyqt_set_trace; pyqt_set_trace()
+        #             if new_layer.isValid():
+        #                 QgsMapLayerRegistry.instance().addMapLayer(
+        #                     new_layer, False)
+        #                 tree_layer = group.insertLayer(100, new_layer)
+        #                 self._mark(tree_layer, 'v2_manhole')
+        #                 # from ..qdebug import pyqt_set_trace; pyqt_set_trace()
+        #
+        #                 cmd_path = ['stap 5 - Resultaten nabewerken',
+        #                             'calc_manhole_statistics.py']
+        #                 mod = self.load_command_module(cmd_path)
+        #
+        #                 self.command = mod.CustomCommand()
+        #                 self.command.run_it(
+        #                     layer=new_layer,
+        #                     datasource=self.model.rows[row_nr],
+        #                     interactive=False)
+        #                 # from ..qdebug import pyqt_set_trace; pyqt_set_trace()
 
     def load_command_module(self, path):
         """Dynamically import and run the selected script from the tree view.
@@ -356,3 +410,86 @@ class LayerTreeManager(object):
             if group is not None:
                 group.removeAllChildren()
                 self.model_layergroup.removeChildNode(group)
+
+    def calc_all_stats(self, result):
+
+        # node_stats_layer = result.get_node_statistics()
+        manhole_stats_layer = result.get_manhole_statistics()
+
+        # line_stats_layer = result.get_line_stats()
+        # pump_stats_layer = result.get_pump_stats()
+
+        manhole_layer = self.create_layer(
+                self.model.model_spatialite_filepath, 'v2_manhole')
+        weir_layer = self.create_layer(
+                self.model.model_spatialite_filepath, 'v2_weir')
+        pump_layer = self.create_layer(
+                self.model.model_spatialite_filepath, 'v2_pumpstation')
+
+        # join_tables(weir_layer, line_stats_layer, 'id', 'spatialite_id')
+        # join_tables(pump_layer, pump_stats_layer, 'id', 'spatialite_id')
+
+
+        # all kind of make-ups for this layer
+
+
+
+
+        QgsMapLayerRegistry.instance().addMapLayers(
+            [manhole_stats_layer], True)
+
+        # Manhole: todo - get a correct view
+        #
+        #
+        # weir_info_pos = {feat['id']: 0.0001 for feat in weir_layer.getFeatures()}
+        # weir_info_neg = {key: -0.0001 for key in weir_info_pos.keys()}
+        #
+        # # max, min, du
+        # line_stats, weirs_dur_pos, weirs_dur_neg = result.get_node_stats(
+        #     duration_related_to_treshold=[(weir_info_pos, 'u', 1),
+        #                                   (weir_info_neg, 'u', -1)]
+        # )
+        #
+        # manhole_layer = self.create_layer(self.model.model_spatialite_filepath,
+        #                                   'v2_manhole',
+        #                                   'the_geom',
+        #                                   'spatialite')
+        # manholes_surface = {feat['id']: feat['surface_level']
+        #                     for feat in manhole_layer.getFeatures()}
+        # manholes_drain = {feat['id']: feat['drain_level']
+        #                   for feat in manhole_layer.getFeatures()}
+        #
+        # node_stats, wos_surface, wos_drain = result.get_line_stats(
+        #     duration_above_treshold=[(manholes_surface, 's1', 1),
+        #                              (manholes_drain, 's1', 1)])
+        #
+        # manhole_layer = self.create_layer(self.model.model_spatialite_filepath,
+        #                                   'v2_manhole',
+        #                                   'the_geom',
+        #                                   'spatialite')
+        # pumps_on = {feat['id']: 0.00001
+        #             for feat in manhole_layer.getFeatures()}
+        #
+        # pump_stats, pump_dur = result.get_pump_stats(
+        #     duration_above_treshold=[(pumps_on, 'qpump', 1)])
+        #
+        # line_stats = result.get_line_stats(pipes, cross_section_definitions,
+        #                                    weirs, orifices)
+        #
+        # node_stats = result.get_node_stats(manholes, boundary1d, line_stats)
+        #
+        # pump_stats = result.get_pump_stats(pumps)
+
+
+def join_tables(layer_one, layer_two, layer_one_field, layer_two_field):
+
+    """Join the generated stats csv with the layer
+
+    Args:
+    """
+    join_info = QgsVectorJoinInfo()
+    join_info.joinLayerId = layer_two.id()
+    join_info.joinFieldName = layer_two_field
+    join_info.targetFieldName = layer_one_field
+    join_info.memoryCache = True
+    layer_one.addJoin(join_info)

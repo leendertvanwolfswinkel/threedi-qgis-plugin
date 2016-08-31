@@ -63,14 +63,14 @@ class StatusProgressBar(object):
     def __init__(self, maximum=100, message_title=''):
 
         self.maximum = maximum
-        self.message_bar = iface.messageBar().createMessage(message_title, '')
 
-        self.progress_bar = QProgressBar()
-        self.progress_bar.setMaximum(maximum)
-        self.progress_bar.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
-
-        self.message_bar.layout().addWidget(self.progress_bar)
         if iface is not None:
+            self.progress_bar = QProgressBar()
+            self.progress_bar.setMaximum(maximum)
+            self.progress_bar.setAlignment(Qt.AlignLeft | Qt.AlignVCenter)
+
+            self.message_bar = iface.messageBar().createMessage(message_title, '')
+            self.message_bar.layout().addWidget(self.progress_bar)
             iface.messageBar().pushWidget(self.message_bar, iface.messageBar().INFO)
 
         self.step_size = 1
@@ -82,10 +82,11 @@ class StatusProgressBar(object):
 
     def increase_progress(self, steps=1, message=None):
 
-        self.progress += steps * self.step_size
-        self.progress_bar.setValue(self.progress)
-        if message:
-            self.message_bar.setText(message)
+        if iface is not None:
+            self.progress += steps * self.step_size
+            self.progress_bar.setValue(self.progress)
+            if message:
+                self.message_bar.setText(message)
 
     def __del__(self):
         if iface is not None:

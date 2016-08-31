@@ -1,5 +1,5 @@
 from PyQt4.QtCore import Qt, QAbstractTableModel, QModelIndex, QSize
-from ..utils.user_messages import log
+from ThreeDiToolbox.utils.user_messages import log
 import inspect
 from base_fields import COLOR_FIELD, CHECKBOX_FIELD, VALUE_FIELD
 
