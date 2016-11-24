@@ -5,6 +5,9 @@ threedi-qgis-plugin changelog
 0.8.3 (unreleased)
 ------------------
 
+- Adopted the calculation points prediction to the changed database schema:
+  ``exchange_height`` has become ``exchange_level``.
+
 - Update cumulative aggregation methods.
 
 - The user_ref field now has the following format:
