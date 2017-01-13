@@ -266,13 +266,10 @@ class ThreeDiTools(QObject, ProjectStateMixin):
             self.graph_tool.action_icon.setEnabled(True)
         else:
             self.graph_tool.action_icon.setEnabled(False)
-        if (self.ts_datasource.rowCount() > 0 and
-                self.ts_datasource.model_spatialite_filepath is not None):
+        if self.ts_datasource.model_spatialite_filepath is not None:
             self.sideview_tool.action_icon.setEnabled(True)
         else:
             self.sideview_tool.action_icon.setEnabled(False)
-
-
 
     def about(self):
         """
