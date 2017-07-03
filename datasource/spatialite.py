@@ -7,11 +7,11 @@ db_manager plugin (is a standard plugin of QGIS, provided with each
 installation)
 """
 
+import os
 
 from qgis.core import QGis, QgsDataSourceURI, QgsVectorLayer
 from db_manager.db_plugins.spatialite.connector import SpatiaLiteDBConnector
 from PyQt4.QtCore import QVariant
-import os
 import ogr
 import gdal
 from ..utils.user_messages import log
@@ -32,6 +32,12 @@ class Spatialite(SpatiaLiteDBConnector):
                     'Unable to create empty spatialite "{0}"'.format(path))
             spatialite = None
         SpatiaLiteDBConnector.__init__(self, uri)
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *args):
+        del self  # this calls self.connection.close()
 
     def _get_uri(self, table_name=None, geom_field='the_geom'):
         uri = QgsDataSourceURI()

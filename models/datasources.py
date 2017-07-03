@@ -103,34 +103,35 @@ class TimeseriesDatasourceModel(BaseModel):
                     data source.
             """
 
-            spl = Spatialite(self.spatialite_cache_filepath())
-
-            if self._line_layer is None:
-                if 'flowlines' in [t[1] for t in spl.getTables()]:
-                    # todo check nr of attributes
-                    self._line_layer = spl.get_layer(
-                        'flowlines', None, 'the_geom')
-                else:
-                    self._line_layer = make_flowline_layer(
-                        self.datasource(), spl)
-
-            if self._node_layer is None:
-                if 'nodes' in [t[1] for t in spl.getTables()]:
-                    self._node_layer = spl.get_layer('nodes', None, 'the_geom')
-                else:
-                    self._node_layer = make_node_layer(self.datasource(), spl)
-
-            if self._pumpline_layer is None:
-
-                if 'pumplines' in [t[1] for t in spl.getTables()]:
-                    self._pumpline_layer = spl.get_layer(
-                        'pumplines', None, 'the_geom')
-                else:
-                    try:
-                        self._pumpline_layer = make_pumpline_layer(
+            with Spatialite(self.spatialite_cache_filepath()) as spl:
+                if self._line_layer is None:
+                    if 'flowlines' in [t[1] for t in spl.getTables()]:
+                        # todo check nr of attributes
+                        self._line_layer = spl.get_layer(
+                            'flowlines', None, 'the_geom')
+                    else:
+                        self._line_layer = make_flowline_layer(
                             self.datasource(), spl)
-                    except KeyError:
-                        log("No pumps in netCDF", level='WARNING')
+
+                if self._node_layer is None:
+                    if 'nodes' in [t[1] for t in spl.getTables()]:
+                        self._node_layer = spl.get_layer(
+                            'nodes', None, 'the_geom')
+                    else:
+                        self._node_layer = make_node_layer(
+                            self.datasource(), spl)
+
+                if self._pumpline_layer is None:
+
+                    if 'pumplines' in [t[1] for t in spl.getTables()]:
+                        self._pumpline_layer = spl.get_layer(
+                            'pumplines', None, 'the_geom')
+                    else:
+                        try:
+                            self._pumpline_layer = make_pumpline_layer(
+                                self.datasource(), spl)
+                        except KeyError:
+                            log("No pumps in netCDF", level='WARNING')
 
             return [self._line_layer, self._node_layer, self._pumpline_layer]
 
