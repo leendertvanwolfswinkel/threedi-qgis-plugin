@@ -11,6 +11,12 @@ from ..utils.layer_from_netCDF import (
 from ..utils.user_messages import log
 from ..datasource.spatialite import Spatialite
 
+# These names are hardcoded at multiple places in our codebase, maybe sort it
+# out if you've got time.
+FLOWLINE_LAYER_NAME = 'flowlines'
+NODE_LAYER_NAME = 'nodes'
+PUMPLINE_LAYER_NAME = 'pumplines'
+
 
 def get_line_pattern(item_field):
     """
@@ -108,6 +114,8 @@ class TimeseriesDatasourceModel(BaseModel):
                     if 'flowlines' in [t[1] for t in spl.getTables()]:
                         # todo check nr of attributes
                         self._line_layer = spl.get_layer(
+                            # Note: layer name default is table name if None
+                            # is passed
                             'flowlines', None, 'the_geom')
                     else:
                         self._line_layer = make_flowline_layer(
