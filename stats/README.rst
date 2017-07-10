@@ -1,21 +1,23 @@
-Stats overview
+Stats Changes
 ==============
 
 The stats module supports generating the following variables:
 
 Using ``flow_aggregate.nc``:
 
-================  ============== =========================== ==============================
-Variable          Layer type     Required parameter/field    Calculation method
-================  ============== =========================== ==============================
-q_cum             structures
-q_max             structures
-q_min             structures
-wos_height        manholes       surface_level               s1_max - surface_level
-s1_max            manholes
-water_depth       manholes       bottom_level                s1_max - bottom_level
-q_pump_cum        pumps
-================  ============== =========================== ==============================
+================  ================ =========================== ==============================
+Variable          Layer type       Required parameter/field    Information
+================  ================ =========================== ==============================
+q_cum             structures                                   Net Volume across flowline structures
+q_cum_positive    structures/pipes                             Total volume across flowline in positive drawing direction (ie. overstortvolume)
+q_cum_positive    structures/pipes                             Total volume across flowline in negative drawing direction (ie. overstortvolume)
+q_max             structures/pipes                             Maximum discharge across flowline (max discharge at strucutre)
+q_min             structures                                   Minimum discharge across flowline (min discharge at strucutre)
+s1_max            manholes         surface_level               WOS height -> s1_max - surface_level
+s1_max            manholes                                     Maximum waterlevel at manhole
+s1_max            manholes                                     Maximum waterdepth -> s1_max - bath (Check whether we write this to flow_aggregate.nc)
+q_pump_cum        pumps                                        Total volume pumped by pump
+================  ================ =========================== ==============================
 
 
 Using ``subgrid_map.nc``:
@@ -23,41 +25,8 @@ Using ``subgrid_map.nc``:
 =======================  ============== ============================= =============================================================
 Variable                 Layer type     Required parameter/field      Calculation method
 =======================  ============== ============================= =============================================================
-q_cumulative_duration    structures                                   sum of dt * count(q > 0)
 q_end                    structures
-tot_vol_positive         structures                                   sum of dt * (q > 0)
-tot_vol_negative         structures                                   sum of dt * (q < 0)
-time_q_max               structures
 s1_end                   manholes
-wos_duration             manholes       surface_level                 sum of dt * count(s1 - surface_level > 0)
-tot_vol_pump             pumps
-pump_duration            pumps          pump_capacity                 1000 * vol_pump / pump_capacity, where vol_pump = dt * q_pump
 =======================  ============== ============================= =============================================================
 
-
-Important note: if the standard aggregation variables (ending with ``_cum``,
-``_max``, ``_min``) aren't available, e.g., due to a missing
-``flow_aggregate.nc`` file, then these variables will be computed from
-the ``subgrid_map.nc`` file, which is very much slower and may be less
-accurate based on what output rate was chosen.
-
-
-Spatialite views
-----------------
-
-Additionally, you get the *old* behaviour if you use the Spatialite views:
-
-calc_structure_statistics.py:
-    - tot_vol
-    - q_max
-    - cumulative_duration
-    - q_end
-    - tot_vol_positive
-    - tot_vol_negative
-    - time_q_max
-
-calc_manhole_statistics.py:
-    - s1_max
-    - wos_height
-    - wos_duration
-    - water_depth
+Important note: When ther is no aggregation netcdf we do not calculate statistics. Only exception can be flow variables at end of simulation (q_end and s1_end.)
