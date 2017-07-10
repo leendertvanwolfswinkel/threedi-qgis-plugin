@@ -22,11 +22,15 @@ q_pump_cum        pumps                                        Total volume pump
 
 Using ``subgrid_map.nc``:
 
-=======================  ============== ============================= =============================================================
-Variable                 Layer type     Required parameter/field      Calculation method
-=======================  ============== ============================= =============================================================
-q_end                    structures
-s1_end                   manholes
-=======================  ============== ============================= =============================================================
+=======================  ============== =============================================================
+Variable                 Layer type     Information
+=======================  ============== =============================================================
+q(tend)                  structures     Discharge across structure at end of calculation
+s1(tend)                 manholes       Waterlevel at manholes at end of calculation
+=======================  ============== =============================================================
 
 Important note: When ther is no aggregation netcdf we do not calculate statistics. Only exception can be flow variables at end of simulation (q_end and s1_end.)
+
+
+**Duration statistics**
+At the moment, it's not possible to accurately determine duration statistics, such as WOS duration and pumping duration and discharge duration at structures. With the information available now we can only determine the durations of variables with an error of maximally aggregate timestep or output timestep. If we want to accurately determine duration statistics this is a new feature to develop! 
