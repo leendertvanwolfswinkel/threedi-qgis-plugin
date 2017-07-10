@@ -35,4 +35,7 @@ Important note: When ther is no aggregation netcdf we do not calculate statistic
 Duration statistics
 -------------------
 
-At the moment, it's not possible to accurately determine duration statistics, such as WOS duration and pumping duration and discharge duration at structures. With the information available now we can only determine the durations of variables with an error of maximally aggregate timestep or output timestep. If we want to accurately determine duration statistics this is a new feature to develop! 
+At the moment, it's not possible to accurately determine duration statistics, such as WOS duration and pumping duration and discharge duration at structures. With the information available now we can only determine the durations of variables with an error of maximally aggregate timestep or output timestep at every timestep. If we want to accurately determine duration statistics this is a new feature to develop! Possiblity to determine discharge duration and pump duration is:
+- Make new aggregation option --> duration
+- Determine q>0 (positive/negative) q_pump>0
+- Write time where q>0 in every aggreagation interval.
